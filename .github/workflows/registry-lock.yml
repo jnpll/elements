@@ -20,6 +20,7 @@ jobs:
       - name: Resolve published package and lockfile
         run: |
           npm pkg set 'dependencies.@jnpll/elements-ui=0.2.0'
+          node -e 'const fs = require("node:fs"); const lock = JSON.parse(fs.readFileSync("package-lock.json", "utf8")); delete lock.packages["../elements-ui"]; delete lock.packages["node_modules/@jnpll/elements-ui"]; fs.writeFileSync("package-lock.json", JSON.stringify(lock, null, 2) + "\n");'
           npx --yes npm@11 install --package-lock-only --ignore-scripts --no-audit --no-fund
           mkdir -p test-results/registry
           npm pack @jnpll/elements-ui@0.2.0 --pack-destination test-results/registry --ignore-scripts

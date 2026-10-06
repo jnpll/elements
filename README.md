@@ -3,6 +3,23 @@
 A Next.js documentation app consuming `@jnpll/elements-ui@0.2.0` from GitHub Packages
 through its public exports. No library components are copied into this app.
 
+## Collections
+
+The home page is an 18-column periodic table with 118 element positions and
+detached lanthanide/actinide rows. Alpha occupies Hydrogen's position; unassigned
+positions are deliberately empty. Family colors use a conventional pastel scheme
+(periodic tables do not have one universal color standard).
+
+`src/collections/themes.ts` stores discovery metadata: theme name, icon fallback,
+element position, and available palettes. `/themes/alpha` previews the current
+Neutral palette and links to the component documentation and playground.
+
+The library owns reusable design contracts in `src/collections/<theme>/theme.json`,
+structural CSS in `theme.css`, and light/dark color variants in `palettes/*.css`.
+The app still consumes the published 0.2.0 stylesheet. New collection-specific
+library exports will become available after the next library release; no local
+library checkout is used by this app.
+
 ## Run
 
 Create a classic GitHub token with only `read:packages` using an account that can

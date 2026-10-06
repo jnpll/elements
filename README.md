@@ -5,16 +5,38 @@ through its public exports. No library components are copied into this app.
 
 ## Run
 
-Authenticate with a classic GitHub token with `read:packages`, then install:
+Create a classic GitHub token with only `read:packages` using an account that can
+access the package. Supply it as `NODE_AUTH_TOKEN` in your shell, then install.
+This Bash/zsh prompt keeps the token out of shell history and terminal output:
 
 ```sh
-npm login --scope=@jnpll --auth-type=legacy --registry=https://npm.pkg.github.com
+printf 'GitHub package token: '
+read -rs NODE_AUTH_TOKEN
+printf '\n'
+export NODE_AUTH_TOKEN
 npm ci
 npm run dev -- --port 3010
 ```
 
 No sibling library checkout is required. The lockfile pins the published package.
-Keep credentials in your user-level npm configuration, not in this repository.
+The committed `.npmrc` reads the token from the environment. Never commit the token.
+npm does not load Next.js `.env.local` files when installing dependencies.
+
+## Vercel
+
+Create a dedicated classic GitHub token, such as `vercel-elements-read`, with only
+`read:packages` and an expiration you can maintain. GitHub's npm registry requires
+authentication even when the package is public.
+
+In the Vercel project's Settings > Environment Variables, add `NODE_AUTH_TOKEN`
+as a sensitive variable with the token as its value. Enable Production and Preview
+(and Development if needed), then redeploy. Do not use a `NEXT_PUBLIC_` prefix.
+The repository's `.npmrc` already routes `@jnpll` packages to GitHub Packages and
+passes this environment variable during installation. No custom install command
+or sibling library checkout is needed.
+
+GitHub Actions continues to use its own `GITHUB_TOKEN`; the Vercel token does not
+need to be added to GitHub Actions secrets.
 
 The app uses Next's webpack option for development and builds. Turbopack's CSS
 worker was unable to bind its local port in the verification environment.

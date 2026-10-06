@@ -6,6 +6,14 @@ const manifest = JSON.parse(readFileSync("package.json", "utf8"));
 const lock = JSON.parse(readFileSync("package-lock.json", "utf8"));
 
 describe("published library dependency", () => {
+  it("authenticates GitHub Packages using an environment variable, not a committed token", () => {
+    const config = readFileSync(".npmrc", "utf8").trim().split(/\r?\n/);
+    expect(config).toEqual([
+      "@jnpll:registry=https://npm.pkg.github.com",
+      "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}",
+    ]);
+  });
+
   it("pins elements-ui to a registry release, not a local directory", () => {
     expect(manifest.dependencies["@jnpll/elements-ui"]).toMatch(/^\d+\.\d+\.\d+$/);
     expect(lock.packages[""].dependencies["@jnpll/elements-ui"]).toBe(manifest.dependencies["@jnpll/elements-ui"]);

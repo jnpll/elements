@@ -1,0 +1,58 @@
+name: Unit tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: elements
+    steps:
+      - name: Check out documentation app
+        uses: actions/checkout@v4
+        with:
+          path: elements
+      - name: Check out shared library
+        uses: actions/checkout@v4
+        with:
+          repository: jnpll/elements-ui
+          ref: v0.2.0
+          path: elements-ui
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            elements/package-lock.json
+            elements-ui/package-lock.json
+      - name: Install shared library dependencies
+        run: npm ci --prefix ../elements-ui
+      - name: Install documentation dependencies
+        run: npm ci
+      - name: Run unit tests and coverage
+        id: unit
+        run: npm run test:ci
+        env:
+          CI: "true"
+      - name: Summarize results
+        if: always()
+        run: node scripts/test-summary.mjs
+        env:
+          TEST_OUTCOME: ${{ steps.unit.outcome }}
+      - name: Upload test and coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: elements/test-results/unit/
+          if-no-files-found: warn
+          retention-days: 14

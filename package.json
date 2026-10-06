@@ -1,0 +1,44 @@
+{
+  "name": "elements",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "npm --prefix ../elements-ui run build",
+    "dev": "next dev --webpack",
+    "prebuild": "npm --prefix ../elements-ui run build",
+    "build": "next build --webpack",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm --prefix ../elements-ui run build",
+    "test": "vitest run",
+    "pretest:watch": "npm --prefix ../elements-ui run build",
+    "test:watch": "vitest",
+    "pretest:ci": "npm --prefix ../elements-ui run build",
+    "test:ci": "vitest run --coverage",
+    "test:e2e": "node tests/smoke.mjs"
+  },
+  "dependencies": {
+    "@jnpll/elements-ui": "file:../elements-ui",
+    "lucide-react": "^1.39.0",
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "recharts": "^3.10.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/coverage-v8": "4.1.11",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "jsdom": "^27.0.0",
+    "vitest": "4.1.11",
+    "playwright": "^1.63.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

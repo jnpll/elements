@@ -14,7 +14,7 @@ export default defineConfig({
     setupFiles: ["./tests/unit/setup.ts"],
     clearMocks: true,
     restoreMocks: true,
-    // Transform linked-library dependencies so they share the app's React instance.
+    // Share React between the package primitives and the test renderer.
     server: { deps: { inline: [/elements-ui/] } },
     reporters: process.env.CI ? ["default", "junit", "json"] : ["default"],
     outputFile: {

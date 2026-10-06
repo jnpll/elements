@@ -2,9 +2,9 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const config: NextConfig = {
-  turbopack: { root: path.resolve(__dirname, "..") },
+  turbopack: { root: path.resolve(__dirname) },
   webpack(config) {
-    // Local file dependencies must share the chart engine's React contexts.
+    // Keep the chart primitives and examples on the same engine instance.
     config.resolve.alias.recharts = path.resolve(__dirname, "node_modules/recharts");
     return config;
   },

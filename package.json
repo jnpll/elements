@@ -3,22 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "npm --prefix ../elements-ui run build",
     "dev": "next dev --webpack",
-    "prebuild": "npm --prefix ../elements-ui run build",
     "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "pretest": "npm --prefix ../elements-ui run build",
     "test": "vitest run",
-    "pretest:watch": "npm --prefix ../elements-ui run build",
     "test:watch": "vitest",
-    "pretest:ci": "npm --prefix ../elements-ui run build",
     "test:ci": "vitest run --coverage",
     "test:e2e": "node tests/smoke.mjs"
   },
   "dependencies": {
-    "@jnpll/elements-ui": "file:../elements-ui",
+    "@jnpll/elements-ui": "0.2.0",
     "lucide-react": "^1.39.0",
     "next": "16.3.4",
     "react": "19.2.8",

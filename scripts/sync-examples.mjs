@@ -2,9 +2,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 // Adapt official Base UI examples to consume this package's public exports.
-const componentDir = path.resolve("../elements-ui/src/components");
+const componentDir = path.resolve("node_modules/@jnpll/elements-ui/dist/components");
 const original = new Set(["badge", "button", "card", "glass-panel", "scroll-area", "separator", "tabs", "tooltip"]);
-const ids = (await fs.readdir(componentDir)).filter((f) => f.endsWith(".tsx")).map((f) => f.slice(0, -4)).filter((id) => !original.has(id)).sort();
+const ids = (await fs.readdir(componentDir)).filter((f) => f.endsWith(".js")).map((f) => f.slice(0, -3)).filter((id) => !original.has(id)).sort();
 const root = "https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/v4/examples/base/";
 const destination = "src/components/examples";
 await fs.mkdir(destination, { recursive: true });
@@ -98,6 +98,7 @@ for (const id of ids) {
     if (!source.startsWith('"use client"')) source = '"use client"\n\n' + source;
     if (id === "aspect-ratio") source = '"use client";\nimport { AspectRatio } from "@jnpll/elements-ui/aspect-ratio";\nexport default function AspectRatioDemo() { return <AspectRatio ratio={16 / 9} className="w-full max-w-sm"><img src="/samples/workspace.webp" alt="MacBook Pro on a workspace" className="size-full rounded-md object-contain bg-white" /></AspectRatio>; }\n';
     source = source.replaceAll('/avatars/shadcn.jpg', 'https://github.com/shadcn.png');
+    if (id === "chart") source = source.replaceAll("labelFormatter={(value) => {", 'labelFormatter={(value) => {\n                    if (typeof value !== "string" && typeof value !== "number") return value');
     source = source.replaceAll('/docs/primitives/typography', '/tokens')
       .replaceAll('/docs/primitives/', '/components/')
       .replaceAll('/docs/installation', '/getting-started')

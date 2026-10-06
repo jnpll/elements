@@ -1,0 +1,59 @@
+name: Build app
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out documentation app
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com
+          scope: "@jnpll"
+      - name: Verify published package is accessible
+        id: registry
+        run: |
+          VERSION=$(node -p "require('./package.json').dependencies['@jnpll/elements-ui']")
+          npm view "@jnpll/elements-ui@$VERSION" version --prefer-online
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install dependencies from a fresh cache
+        id: install
+        run: npm ci --cache "$RUNNER_TEMP/elements-npm-cache"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Typecheck
+        id: types
+        run: npm run typecheck
+      - name: Build production app
+        id: app
+        run: npm run build
+      - name: Summarize build checks
+        if: always()
+        env:
+          REGISTRY: ${{ steps.registry.outcome }}
+          INSTALL: ${{ steps.install.outcome }}
+          TYPES: ${{ steps.types.outcome }}
+          APP: ${{ steps.app.outcome }}
+        run: |
+          {
+            echo '## Elements Build'
+            echo '| Check | Result |'
+            echo '| --- | --- |'
+            echo "| GitHub package access | $REGISTRY |"
+            echo "| Fresh dependency install | $INSTALL |"
+            echo "| Typecheck | $TYPES |"
+            echo "| Production build | $APP |"
+          } >> "$GITHUB_STEP_SUMMARY"

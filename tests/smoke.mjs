@@ -11,7 +11,7 @@ const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
 page.on("console", (message) => { if (message.type() === "error") console.log("Browser console:", message.text()); });
 const ids = ["button", "badge", "card", "glass-panel", "tabs", "tooltip", "separator", "scroll-area"];
-const allIds = (await readdir("../elements-ui/src/components")).filter((name) => name.endsWith(".tsx")).map((name) => name.slice(0, -4));
+const allIds = (await readdir("node_modules/@jnpll/elements-ui/dist/components")).filter((name) => name.endsWith(".js")).map((name) => name.slice(0, -3));
 await mkdir("test-results", { recursive: true });
 
 async function noOverflow() {

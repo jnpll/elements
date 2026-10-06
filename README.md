@@ -1,19 +1,20 @@
 # Elements
 
-A Next.js documentation app consuming the sibling `@jnpll/elements-ui` package
+A Next.js documentation app consuming `@jnpll/elements-ui@0.2.0` from GitHub Packages
 through its public exports. No library components are copied into this app.
 
 ## Run
 
-Install dependencies in `../elements-ui` first, then run:
+Authenticate with a classic GitHub token with `read:packages`, then install:
 
 ```sh
-npm install
+npm login --scope=@jnpll --auth-type=legacy --registry=https://npm.pkg.github.com
+npm ci
 npm run dev -- --port 3010
 ```
 
-`predev` and `prebuild` rebuild the sibling library. During development, rebuild
-the library after editing its source to refresh its compiled exports.
+No sibling library checkout is required. The lockfile pins the published package.
+Keep credentials in your user-level npm configuration, not in this repository.
 
 The app uses Next's webpack option for development and builds. Turbopack's CSS
 worker was unable to bind its local port in the verification environment.
@@ -34,16 +35,22 @@ CI=true npm run test:ci
 ```
 
 The suite covers catalog integrity, generated recipes, controls, clipboard
-feedback, and playground state. The test scripts rebuild the sibling library.
+feedback, and playground state.
 Coverage is scoped to these app-owned modules, not generated demo recipes or
 third-party library internals. CI enforces coverage thresholds and writes JUnit,
 JSON, HTML coverage, and LCOV reports to `test-results/unit/`.
 
 The Unit tests workflow runs on pushes, pull requests, and manual dispatch. It
-checks out the library's `v0.2.0` tag beside this app so the local file dependency
-works without GitHub Packages credentials. It always summarizes and uploads
+installs the published GitHub package with `packages: read` and `GITHUB_TOKEN`.
+It always summarizes and uploads
 available reports, even if tests fail; a failing test still fails the job.
 This app is maintained separately at https://github.com/jnpll/elements.
+
+The Build app workflow also runs on every push, pull request, and manual dispatch.
+It checks GitHub Packages access online, installs from the lockfile into a fresh
+npm cache, typechecks, and builds the production app. Missing package access,
+download failures, type errors, and build errors fail the job. Its summary is
+written even when a check fails.
 
 ```sh
 npm run typecheck
@@ -56,6 +63,7 @@ Run the browser checks with the app running on port 3010. Set `TEST_URL` to use
 another address or `PLAYWRIGHT_EXECUTABLE_PATH` to use an existing Chromium binary.
 Screenshots are written to the ignored `test-results` directory.
 
-Development uses a local `file:../elements-ui` dependency. Version 0.2.0 is also
-published as `@jnpll/elements-ui` on GitHub Packages. Deploy with both folders
-available, or use the registry version with authenticated package installation.
+Deployment only needs this repository. Authenticate package installation with a
+`read:packages` token, or an authorized GitHub Actions `GITHUB_TOKEN`. In the
+package settings, grant this repository Actions access if the package is private.
+External pull requests may require maintainer approval or suitable package access.

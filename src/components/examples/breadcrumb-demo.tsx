@@ -1,5 +1,7 @@
 "use client"
 
+import { IconTooltip } from "@/components/icon-tooltip";
+
 import Link from "next/link"
 
 import {
@@ -30,12 +32,12 @@ export function BreadcrumbDemo() {
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <DropdownMenu>
-            <DropdownMenuTrigger
+            <IconTooltip label="Toggle menu"><DropdownMenuTrigger
               render={<Button size="icon-sm" variant="ghost" />}
             >
               <BreadcrumbEllipsis />
               <span className="sr-only">Toggle menu</span>
-            </DropdownMenuTrigger>
+            </DropdownMenuTrigger></IconTooltip>
             <DropdownMenuContent align="start">
               <DropdownMenuGroup>
                 <DropdownMenuItem>Documentation</DropdownMenuItem>

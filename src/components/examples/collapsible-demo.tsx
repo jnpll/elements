@@ -1,5 +1,7 @@
 "use client"
 
+import { IconTooltip } from "@/components/icon-tooltip";
+
 import * as React from "react"
 import { ChevronsUpDown } from "lucide-react"
 
@@ -21,12 +23,12 @@ export default function CollapsibleDemo() {
     >
       <div className="flex items-center justify-between gap-4 px-4">
         <h4 className="text-sm font-semibold">Order #4189</h4>
-        <CollapsibleTrigger
+        <IconTooltip label="Toggle details"><CollapsibleTrigger
           render={<Button variant="ghost" size="icon" className="size-8" />}
         >
           <ChevronsUpDown />
           <span className="sr-only">Toggle details</span>
-        </CollapsibleTrigger>
+        </CollapsibleTrigger></IconTooltip>
       </div>
       <div className="flex items-center justify-between rounded-md border px-4 py-2 text-sm">
         <span className="text-muted-foreground">Status</span>

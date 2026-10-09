@@ -1,5 +1,5 @@
 import { extraCatalog, extraIds } from "./extra-catalog";
-export const componentIds = ["button", "badge", "card", "glass-panel", "tabs", "tooltip", "separator", "scroll-area", ...extraIds] as const;
+export const componentIds = ["button", "badge", "card", "glass-panel", "tabs", "tooltip", "separator", "scroll-area", "pattern", ...extraIds] as const;
 export type ComponentId = typeof componentIds[number];
 export type Options = {
   text: string;
@@ -9,6 +9,10 @@ export type Options = {
   icon: boolean;
   strong: boolean;
   ring: boolean;
+  pattern: "dots" | "grid" | "none";
+  spacing: number;
+  patternSize: number;
+  fade: boolean;
   orientation: "horizontal" | "vertical";
   tabVariant: "default" | "line";
   side: "top" | "right" | "bottom" | "left";
@@ -27,13 +31,14 @@ export const catalog: ComponentInfo[] = [
   { id: "tooltip", name: "Tooltip", group: "Feedback", description: "A short piece of context, available on hover and keyboard focus.", note: "Wrap tooltips in TooltipProvider. TooltipContent portals the popup and arrow. Keep essential information visible outside the tooltip.", props: [prop("TooltipProvider.delay", "number", "0", "Delay before opening, in milliseconds."), prop("TooltipContent.side", '"top" | "right" | "bottom" | "left"', '"top"', "Preferred popup placement; may change to avoid collisions."), prop("TooltipContent.sideOffset", "number", "4", "Gap from the trigger, in pixels."), prop("TooltipContent.align", '"start" | "center" | "end"', '"center"', "Alignment along the chosen side.")] },
   { id: "separator", name: "Separator", group: "Layout", description: "A quiet divider that gives related content room to breathe.", note: "A vertical separator needs a parent with a defined height. Use the orientation prop to establish the divider's direction.", props: [prop("orientation", '"horizontal" | "vertical"', '"horizontal"', "Direction of the divider."), prop("className", "string", "-", "Controls color, spacing, and dimensions.")] },
   { id: "scroll-area", name: "Scroll Area", group: "Layout", description: "A constrained viewport with a consistent, unobtrusive scrollbar.", note: "Give ScrollArea an explicit height to enable vertical scrolling. The exported ScrollBar supports horizontal orientation for custom compositions.", props: [prop("children", "ReactNode", "-", "Scrollable content."), prop("className", "string", "-", "Defines viewport dimensions and surface styles."), prop("ScrollBar.orientation", '"vertical" | "horizontal"', '"vertical"', "Scrollbar direction; the default ScrollArea includes a vertical bar.")] },
+  { id: "pattern", name: "Pattern", group: "Surfaces", description: "A quiet dotted or gridded canvas that follows your palette.", note: "The pattern is decorative and hidden from assistive technology. Content stays readable when the pattern fades. Set dimensions and spacing with className; colours default to the theme's background and border tokens.", props: [prop("pattern", '"dots" | "grid" | "none"', '"dots"', "Background pattern."), prop("spacing", "number", "12", "Pattern spacing in pixels, at least 2."), prop("size", "number", "0.7", "Dot radius or grid line width in pixels."), prop("color", "string", "var(--border)", "Pattern colour; accepts CSS colours and variables."), prop("background", "string", "var(--background)", "Surface background colour."), prop("fade", "boolean", "false", "Fades the pattern toward the edges, without fading content."), prop("children", "ReactNode", "-", "Content placed above the pattern."), prop("className", "string", "-", "Controls dimensions, padding, and geometry.")] },
   ...extraCatalog as ComponentInfo[],
 ];
 export function isComponentId(value: string): value is ComponentId { return componentIds.includes(value as ComponentId); }
 export function getComponent(id: ComponentId) { return catalog.find((item) => item.id === id)!; }
 export function defaultOptions(id: ComponentId): Options {
   const labels: Partial<Record<ComponentId, string>> = { button: "Continue", badge: "In progress", card: "Studio workspace", "glass-panel": "A little clarity", tabs: "Overview", tooltip: "Save to collection", separator: "Details", "scroll-area": "Activity" };
-  return { text: labels[id] ?? getComponent(id).name, variant: "default", size: "default", disabled: false, icon: false, strong: false, ring: false, orientation: "horizontal", tabVariant: "default", side: "top", delay: 0, example: 0 };
+  return { text: labels[id] ?? getComponent(id).name, variant: "default", size: "default", disabled: false, icon: false, strong: false, ring: false, pattern: "dots", spacing: 12, patternSize: 0.7, fade: false, orientation: "horizontal", tabVariant: "default", side: "top", delay: 0, example: 0 };
 }
 const literal = (value: string) => `{${JSON.stringify(value)}}`;
 export function sampleCode(id: ComponentId, o: Options): string {
@@ -43,6 +48,7 @@ export function sampleCode(id: ComponentId, o: Options): string {
   const text = literal(o.text);
   let body = "";
   switch (id) {
+    case "pattern": body = `<Pattern pattern="${o.pattern}" spacing={${o.spacing}} size={${o.patternSize}}${o.fade ? " fade" : ""} className="flex min-h-52 w-full items-center justify-center p-6">\n  <span>${text}</span>\n</Pattern>`; break;
     case "button": body = `<Button variant="${o.variant}" size="${o.size}"${o.disabled ? " disabled" : ""}${o.size.startsWith("icon") ? ` aria-label=${text}` : ""}>\n  ${o.icon || o.size.startsWith("icon") ? "<ArrowRight />" : ""}${!o.size.startsWith("icon") ? text : ""}\n</Button>`; break;
     case "badge": body = `<Badge variant="${o.variant}">${text}</Badge>`; break;
     case "card": body = `<Card size="${o.size === "sm" ? "sm" : "default"}" className="w-full max-w-sm">\n  <CardHeader>\n    <CardTitle>${text}</CardTitle>\n    <CardDescription>Your space to make something good.</CardDescription>\n  </CardHeader>\n  <CardContent><img src="/samples/workspace.webp" alt="MacBook Pro on a clean workspace" className="mb-4 h-28 w-full rounded-md object-contain bg-white" /><p>Everything you need, in one place.</p></CardContent>\n  <CardFooter><span>Updated just now</span></CardFooter>\n</Card>`; break;
@@ -52,5 +58,5 @@ export function sampleCode(id: ComponentId, o: Options): string {
     case "separator": body = o.orientation === "horizontal" ? `<div className="w-full max-w-sm">\n  <p>${text}</p>\n  <Separator className="my-4" />\n  <p className="text-sm text-muted-foreground">A related section</p>\n</div>` : `<div className="flex h-8 items-center gap-4">\n  <span>${text}</span>\n  <Separator orientation="vertical" />\n  <span>Settings</span>\n</div>`; break;
     case "scroll-area": body = `<ScrollArea className="h-56 w-full max-w-sm rounded-lg border">\n  <div className="p-4">\n    <h3 className="mb-4 font-medium">${text}</h3>\n    {Array.from({ length: 18 }, (_, i) => (\n      <div key={i} className="border-b py-3 text-sm">Workspace update {i + 1}</div>\n    ))}\n  </div>\n</ScrollArea>`; break;
   }
-  return `import { ${components[id]} } from "@jnpll/elements-ui/${id}";${id === "button" && (o.icon || o.size.startsWith("icon")) ? '\nimport { ArrowRight } from "lucide-react";' : ""}\n\n${body}`;
+  return `import { ${id === "pattern" ? "Pattern" : components[id]} } from "@jnpll/elements-ui/${id}";${id === "button" && (o.icon || o.size.startsWith("icon")) ? '\nimport { ArrowRight } from "lucide-react";' : ""}\n\n${body}`;
 }

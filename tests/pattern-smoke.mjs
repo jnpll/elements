@@ -1,0 +1,51 @@
+import assert from "node:assert/strict";
+import { mkdir } from "node:fs/promises";
+import { chromium } from "playwright";
+import { toggleAppearance } from "./appearance-helpers.mjs";
+
+const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+const errors = [];
+page.on("pageerror", error => errors.push(error.message));
+await mkdir("test-results", { recursive: true });
+try {
+  const base = process.env.TEST_URL || "http://localhost:3010";
+  await page.goto(`${base}/components/pattern-surface`);
+  assert.equal(new URL(page.url()).pathname, "/components/pattern");
+  await page.getByRole("heading", { name: "Pattern", exact: true }).waitFor();
+  await page.getByRole("button", { name: "Toggle properties" }).click();
+  const surface = page.locator('.preview-sample [data-slot="pattern"]');
+  const layer = surface.locator('[data-slot="pattern-pattern"]');
+  assert.match(await layer.evaluate(el => getComputedStyle(el).backgroundImage), /radial-gradient/);
+  await page.getByLabel("Pattern", { exact: true }).selectOption("grid");
+  assert.match(await layer.evaluate(el => getComputedStyle(el).backgroundImage), /linear-gradient/);
+  await page.getByRole("slider", { name: "Spacing" }).fill("24");
+  assert.equal(await layer.evaluate(el => getComputedStyle(el).backgroundSize), "24px 24px, 24px 24px");
+  await page.getByRole("switch", { name: "Fade edges" }).check();
+  assert.match(await layer.evaluate(el => getComputedStyle(el).maskImage), /radial-gradient/);
+  assert.equal(await surface.evaluate(el => getComputedStyle(el).maskImage), "none");
+  await page.getByRole("button", { name: "Select theme and palette" }).click();
+  await page.getByRole("menuitemradio", { name: "Arthur", exact: true }).click();
+  await page.getByRole("menu").waitFor({ state: "hidden" });
+  await toggleAppearance(page);
+  await page.screenshot({ path: "test-results/pattern-desktop.png", fullPage: true });
+  await page.getByLabel("Pattern", { exact: true }).selectOption("none");
+  assert.equal(await layer.evaluate(el => getComputedStyle(el).backgroundImage), "none");
+  await page.getByRole("tab", { name: "Code", exact: true }).click();
+  assert.match(await page.locator(".component-preview pre").innerText(), /pattern="none" spacing=\{24\} size=\{0.7\} fade/);
+  await page.getByRole("tab", { name: "Preview", exact: true }).click();
+  await page.getByRole("button", { name: "Reset properties" }).click();
+  assert.equal(await surface.getAttribute("data-pattern"), "dots");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForFunction(() => document.querySelector(".sidebar").getBoundingClientRect().right <= 1);
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+  await page.screenshot({ path: "test-results/pattern-mobile.png", fullPage: true });
+  await page.goto(`${base}/components/button`);
+  const preview = page.locator('.preview-stage[data-slot="pattern"]');
+  assert.equal(await preview.getAttribute("data-pattern"), "dots");
+  assert.match(await preview.locator(':scope > [data-slot="pattern-pattern"]').evaluate(el => getComputedStyle(el).backgroundImage), /radial-gradient/);
+  assert.deepEqual(errors, []);
+  console.log("Verified pattern controls, fade isolation, generated code, reset, mobile layout, and shared preview background.");
+} finally {
+  await browser.close();
+}

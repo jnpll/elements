@@ -1,5 +1,7 @@
 "use client"
 
+import { IconTooltip } from "@/components/icon-tooltip";
+
 import { Bold, Italic, Underline } from "lucide-react"
 
 import {
@@ -10,15 +12,15 @@ import {
 export function ToggleGroupDisabled() {
   return (
     <ToggleGroup disabled>
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
+      <IconTooltip label="Toggle bold" disabled><ToggleGroupItem value="bold" aria-label="Toggle bold">
         <Bold />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
+      </ToggleGroupItem></IconTooltip>
+      <IconTooltip label="Toggle italic" disabled><ToggleGroupItem value="italic" aria-label="Toggle italic">
         <Italic />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
+      </ToggleGroupItem></IconTooltip>
+      <IconTooltip label="Toggle strikethrough" disabled><ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
         <Underline />
-      </ToggleGroupItem>
+      </ToggleGroupItem></IconTooltip>
     </ToggleGroup>
   )
 }

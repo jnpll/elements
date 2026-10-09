@@ -1,5 +1,7 @@
 "use client"
 
+import { IconTooltip } from "@/components/icon-tooltip";
+
 import * as React from "react"
 import {
   ArchiveIcon,
@@ -35,9 +37,9 @@ export default function ButtonGroupDemo() {
   return (
     <ButtonGroup>
       <ButtonGroup className="hidden sm:flex">
-        <Button variant="outline" size="icon" aria-label="Go Back">
+        <IconTooltip label="Go Back"><Button variant="outline" size="icon" aria-label="Go Back">
           <ArrowLeftIcon />
-        </Button>
+        </Button></IconTooltip>
       </ButtonGroup>
       <ButtonGroup>
         <Button variant="outline">Archive</Button>
@@ -46,13 +48,13 @@ export default function ButtonGroupDemo() {
       <ButtonGroup>
         <Button variant="outline">Snooze</Button>
         <DropdownMenu>
-          <DropdownMenuTrigger
+          <IconTooltip label="More Options"><DropdownMenuTrigger
             render={
               <Button variant="outline" size="icon" aria-label="More Options" />
             }
           >
             <MoreHorizontalIcon />
-          </DropdownMenuTrigger>
+          </DropdownMenuTrigger></IconTooltip>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuGroup>
               <DropdownMenuItem>

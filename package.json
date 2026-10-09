@@ -4,36 +4,47 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
+    "ui:local": "node scripts/use-elements-ui.mjs local",
+    "ui:published": "node scripts/use-elements-ui.mjs published",
+    "dev:local": "npm run ui:local && npm run dev --",
     "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ci": "vitest run --coverage",
-    "test:e2e": "node tests/smoke.mjs"
+    "test:e2e": "node tests/smoke.mjs",
+    "test:themes": "node tests/theme-smoke.mjs",
+    "test:header": "node tests/header-theme-smoke.mjs",
+    "test:appearance": "node tests/appearance-smoke.mjs",
+    "test:glow": "node tests/glow-smoke.mjs",
+    "test:patterns": "node tests/pattern-smoke.mjs",
+    "test:tooltips": "node tests/tooltip-smoke.mjs",
+    "test:layouts": "node tests/layout-smoke.mjs"
   },
   "dependencies": {
-    "@jnpll/elements-ui": "0.2.0",
+    "@jnpll/elements-ui": "0.4.0",
     "lucide-react": "^1.39.0",
     "next": "16.3.4",
+    "postcss": "^8.5.29",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "recharts": "^3.10.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.0.0",
     "@vitest/coverage-v8": "4.1.11",
-    "@testing-library/react": "^16.0.0",
-    "@testing-library/user-event": "^14.0.0",
-    "@testing-library/jest-dom": "^6.0.0",
     "jsdom": "^27.0.0",
-    "vitest": "4.1.11",
     "playwright": "^1.63.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "4.1.11"
   }
 }

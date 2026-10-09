@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Shell } from "@/components/shell";
+import { ThemeProvider } from "@/components/theme-provider";
+import { getElementsThemeScript } from "@jnpll/elements-ui/themes";
+import { appearanceScript } from "@/lib/appearance";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,8 +10,8 @@ export const metadata: Metadata = {
   description: "Component documentation and playground for Elements UI.",
 };
 
-const themeScript = `try { const theme = localStorage.getItem('elements-docs-theme'); document.documentElement.classList.toggle('dark', theme === 'dark' || (!theme && matchMedia('(prefers-color-scheme: dark)').matches)); } catch {}`;
+const designScript = getElementsThemeScript();
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head><body><Shell>{children}</Shell></body></html>;
+  return <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: appearanceScript + designScript }} /></head><body><ThemeProvider><Shell>{children}</Shell></ThemeProvider></body></html>;
 }

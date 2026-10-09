@@ -23,7 +23,7 @@ export default defineConfig({
     },
     coverage: {
       provider: "v8",
-      include: ["src/lib/catalog.ts", "src/components/{controls,code-block,playground}.tsx"],
+      include: ["src/lib/catalog.ts", "src/components/{controls,code-block,component-preview}.tsx"],
       reporter: ["text", "html", "lcov", "json-summary"],
       reportsDirectory: "test-results/unit/coverage",
       reportOnFailure: true,

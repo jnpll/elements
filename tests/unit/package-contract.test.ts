@@ -1,11 +1,23 @@
 // @vitest-environment node
 import { readFileSync } from "node:fs";
+import { alphaIcon, crown2BoldIcon } from "@jnpll/elements-ui/icons";
 import { describe, expect, it } from "vitest";
 
 const manifest = JSON.parse(readFileSync("package.json", "utf8"));
 const lock = JSON.parse(readFileSync("package-lock.json", "utf8"));
 
 describe("published library dependency", () => {
+  it("imports icons and the Britanniae collection directly from the package", () => {
+    expect(alphaIcon).toMatch(/^data:image\/svg\+xml,/);
+    expect(crown2BoldIcon).toMatch(/^data:image\/svg\+xml,/);
+    expect(decodeURIComponent(alphaIcon)).toContain("<svg");
+    expect(decodeURIComponent(alphaIcon)).toContain('viewBox="0 0 24 24"');
+    expect(decodeURIComponent(alphaIcon)).toContain('d="M3 20.5L8.341 6.152');
+    expect(decodeURIComponent(crown2BoldIcon)).toContain("<svg");
+    expect(readFileSync("src/collections/themes.ts", "utf8")).toContain('@jnpll/elements-ui/themes');
+    expect(readFileSync("src/app/globals.css", "utf8")).toContain('@jnpll/elements-ui/themes.css');
+    expect(manifest.scripts["themes:sync"]).toBeUndefined();
+  });
   it("authenticates GitHub Packages using an environment variable, not a committed token", () => {
     const config = readFileSync(".npmrc", "utf8").trim().split(/\r?\n/);
     expect(config).toEqual([

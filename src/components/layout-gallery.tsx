@@ -10,8 +10,7 @@ import { Card, CardContent } from "@jnpll/elements-ui/card";
 import { Input } from "@jnpll/elements-ui/input";
 import { Switch } from "@jnpll/elements-ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@jnpll/elements-ui/tabs";
-import { themes } from "@/collections/themes";
-import { useDesignTheme } from "@/components/theme-provider";
+import { ThemeSelector } from "@jnpll/elements-ui/theme-selector";
 import { isLayoutId, type LayoutId } from "@/lib/layouts";
 const seedProjects = [
   { name: "Brand refresh", owner: "Eleanor", status: "In progress", progress: 72 },
@@ -27,8 +26,6 @@ const seedTasks = [
 ];
 
 export function LayoutGallery({ initialLayout = "overview" }: { initialLayout?: LayoutId }) {
-  const { selection, select } = useDesignTheme();
-  const theme = themes.find(theme => theme.id === selection.theme)!;
   const [layout, setLayout] = useState(initialLayout);
   const [mobile, setMobile] = useState(false);
   const [projects, setProjects] = useState(seedProjects);
@@ -48,7 +45,7 @@ export function LayoutGallery({ initialLayout = "overview" }: { initialLayout?: 
     <Tabs value={layout} onValueChange={value => { if (isLayoutId(value)) choose(value); }}>
     <div className="layout-controls flex items-end flex-wrap gap-4 mt-7 mr-0 mb-5 ml-0 max-[760px]:gap-3">
       <TabsList aria-label="Sample layout"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="board">Board</TabsTrigger><TabsTrigger value="settings">Settings</TabsTrigger></TabsList>
-      <div className="layout-theme-controls flex gap-3 ml-auto [&_label]:grid [&_label]:gap-[5px] [&_label]:text-[11px] [&_label]:text-muted-foreground [&_select]:min-w-[115px] [&_select]:h-8 [&_select]:py-0 [&_select]:px-2 [&_select]:text-foreground [&_select]:bg-card [&_select]:border [&_select]:border-border [&_select]:rounded-[4px] max-[760px]:ml-0 max-[760px]:[&_select]:min-w-25"><label>Theme<select aria-label="Layout theme" value={selection.theme} onChange={event => { const next = themes.find(theme => theme.id === event.target.value)!; select({ theme: next.id, palette: next.defaultPalette }); }}>{themes.map(theme => <option key={theme.id} value={theme.id}>{theme.name}</option>)}</select></label><label>Palette<select aria-label="Layout palette" value={selection.palette} onChange={event => select({ theme: theme.id, palette: event.target.value })}>{theme.palettes.map(palette => <option key={palette.id} value={palette.id}>{palette.name}</option>)}</select></label></div>
+      <div className="layout-theme-controls ml-auto grid gap-1 text-[11px] text-muted-foreground max-[760px]:ml-0"><span>Theme / palette</span><ThemeSelector showLabel label="Layout theme and palette" className="min-w-52 justify-between" /></div>
       <div className="layout-view-controls flex gap-[3px]" role="group" aria-label="Layout preview width"><IconTooltip label="Desktop layout preview"><Button size="icon-sm" variant={mobile ? "ghost" : "secondary"} onClick={() => setMobile(false)} aria-label="Desktop layout preview" aria-pressed={!mobile}><Monitor /></Button></IconTooltip><IconTooltip label="Mobile layout preview"><Button size="icon-sm" variant={mobile ? "secondary" : "ghost"} onClick={() => setMobile(true)} aria-label="Mobile layout preview" aria-pressed={mobile}><Smartphone /></Button></IconTooltip><IconTooltip label="Reset sample data"><Button size="icon-sm" variant="ghost" onClick={reset} aria-label="Reset sample data"><RotateCcw /></Button></IconTooltip></div>
     </div>
     <TabsContent value={layout}><div className="layout-surface p-5 bg-muted border border-border rounded-[6px] max-[760px]:p-2"><section className={`sample-app @container [&.sample-app-mobile]:w-90 w-full max-w-full m-auto min-h-140 bg-background text-foreground border border-border rounded-[4px] overflow-hidden ${mobile ? "sample-app-mobile" : ""}`} aria-label="Sample application">

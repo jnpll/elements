@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 import { chromium } from "playwright";
 import { toggleAppearance } from "./appearance-helpers.mjs";
-import { alphaIcon, crown2BoldIcon } from "@jnpll/elements-ui/icons";
+import { alphaIcon, crown2BoldIcon, ringedPlanetIcon, pantheonFilledIcon } from "@jnpll/elements-ui/icons";
 
 const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, colorScheme: "light" });
@@ -24,7 +24,7 @@ try {
   await page.screenshot({ path: "test-results/alpha-home.png", fullPage: true });
   assert.equal((await page.request.get(`${baseURL}/theme-icons/alpha.svg`)).status(), 404, "No copied icon is needed");
   const colors = new Set();
-  for (const name of ["Arthur", "Guinevere", "Merlin", "Mordred", "Percival", "Lancelot", "Galahad"]) {
+  for (const name of ["Arthur", "Guinevere", "Merlin", "Percival", "Lancelot", "Galahad"]) {
     const tile = page.getByRole("button", { name: `Apply Britanniae ${name}`, exact: true });
     await tile.click();
     await page.getByRole("button", { name: `Apply Britanniae ${name}`, exact: true, pressed: true }).waitFor();
@@ -44,20 +44,20 @@ try {
       assert.equal(design.primary, "#e4c65b");
       assert.equal(await page.locator("html").evaluate(el => getComputedStyle(el).getPropertyValue("--background").trim()), "#f4effa");
     }
-    if (name === "Mordred") {
-      assert.equal(design.primary, "#702638");
-      assert.equal(await page.locator("html").evaluate(el => getComputedStyle(el).getPropertyValue("--background").trim()), "#fafafa");
-      assert.equal(await page.locator("html").evaluate(el => getComputedStyle(el).colorScheme), "light");
-      await toggleAppearance(page);
-      assert.equal(await page.locator("html").evaluate(el => getComputedStyle(el).getPropertyValue("--background").trim()), "#101010");
-      assert.equal(await page.locator("html").evaluate(el => getComputedStyle(el).getPropertyValue("--primary").trim()), "#a34860");
-      assert.match(await page.locator("html").evaluate(el => getComputedStyle(el).getPropertyValue("--primary-foreground").trim()), /^#(?:fff|ffffff)$/);
-      assert.equal(await page.locator("html").evaluate(el => getComputedStyle(el).colorScheme), "dark");
-      await toggleAppearance(page);
-    }
     await page.screenshot({ path: `test-results/britanniae-${name.toLowerCase()}.png`, fullPage: true });
   }
-  assert.equal(colors.size, 7);
+  assert.equal(colors.size, 6);
+  for (const [theme, palette, icon] of [["Cosmo", "Astral", ringedPlanetIcon], ["Cosmo", "Stellar", ringedPlanetIcon], ["Pantheon", "Apollo", pantheonFilledIcon]]) {
+    await page.getByRole("button", { name: `Apply ${theme} ${palette}`, exact: true }).click();
+    await page.getByRole("img", { name: `${theme} app icon`, exact: true }).waitFor();
+    assert.ok((await page.locator(".brand-icon").evaluate(el => getComputedStyle(el).maskImage)).includes(icon));
+    assert.equal(await page.locator("html").getAttribute("data-elements-theme"), theme.toLowerCase());
+    await page.goto(`${baseURL}/themes/${theme.toLowerCase()}`);
+    await page.getByRole("heading", { name: theme, exact: true }).waitFor();
+    await page.screenshot({ path: `test-results/${theme.toLowerCase()}-${palette.toLowerCase()}-theme.png`, fullPage: true });
+    await page.goto(baseURL);
+  }
+  await page.getByRole("button", { name: "Apply Britanniae Galahad", exact: true }).click();
   await page.reload();
   assert.equal(await page.locator("html").getAttribute("data-elements-palette"), "galahad");
   await toggleAppearance(page);
@@ -110,11 +110,11 @@ try {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     await page.screenshot({ path: `test-results/britanniae-mobile-${width}.png`, fullPage: true });
   }
-  await page.getByRole("button", { name: "Apply Alpha Neutral", exact: true }).click();
+  await page.getByRole("button", { name: "Apply Alpha Base", exact: true }).click();
   assert.equal(await page.locator("html").getAttribute("data-elements-theme"), "alpha");
   assert.doesNotMatch(await page.locator("h1").evaluate(el => getComputedStyle(el).fontFamily), /Georgia/);
   assert.deepEqual(errors, []);
-  console.log("Passed all seven palettes, persistence, dark mode, cross-route styling, mobile tiles, and Alpha reset.");
+  console.log("Passed Britanniae palettes, Cosmo and Pantheon selection, persistence, dark mode, cross-route styling, mobile tiles, and Alpha reset.");
 } finally {
   await browser.close();
 }

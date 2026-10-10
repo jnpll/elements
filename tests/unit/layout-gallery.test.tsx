@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { LayoutGallery } from "@/components/layout-gallery";
 import { isLayoutId } from "@/lib/layouts";
@@ -39,10 +40,12 @@ describe("layout gallery", () => {
     fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
     expect(screen.getByRole("status")).toHaveTextContent("Changes saved in this preview.");
   });
-  it("applies the chosen theme and palette to the app", () => {
+  it("applies the chosen theme and palette to the app", async () => {
+    const user = userEvent.setup();
     render(<ThemeProvider><LayoutGallery /></ThemeProvider>);
-    fireEvent.change(screen.getByRole("combobox", { name: "Layout theme" }), { target: { value: "britanniae" } });
-    fireEvent.change(screen.getByRole("combobox", { name: "Layout palette" }), { target: { value: "merlin" } });
+    await user.click(screen.getByRole("button", { name: "Layout theme and palette" }));
+    await user.click(screen.getByRole("button", { name: "Britanniae" }));
+    await user.click(screen.getByRole("button", { name: "Merlin" }));
     expect(document.documentElement.dataset).toMatchObject({ elementsTheme: "britanniae", elementsPalette: "merlin" });
   });
 });

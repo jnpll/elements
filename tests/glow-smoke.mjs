@@ -18,8 +18,8 @@ try {
     probe.textContent = "Palette gradient";
     panel.append(probe);
     const results = [];
-    for (const palette of ["neutral", "arthur", "guinevere", "merlin", "mordred", "percival", "lancelot", "galahad"]) {
-      root.dataset.elementsTheme = palette === "neutral" ? "alpha" : "britanniae";
+    for (const palette of ["base", "arthur", "guinevere", "merlin", "percival", "lancelot", "galahad"]) {
+      root.dataset.elementsTheme = palette === "base" ? "alpha" : "britanniae";
       root.dataset.elementsPalette = palette;
       for (const dark of [false, true]) {
         root.classList.toggle("dark", dark);

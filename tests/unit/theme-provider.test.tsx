@@ -16,7 +16,7 @@ afterEach(() => {
 });
 
 describe("design theme selection", () => {
-  it("applies a noble-gas palette and persists it without changing dark mode", () => {
+  it("applies a Britanniae palette and persists it without changing dark mode", () => {
     document.documentElement.classList.add("dark");
     render(<ThemeProvider><ThemeIcon /><Home /></ThemeProvider>);
     expect(screen.getByRole("img", { name: "Alpha app icon" }).style.getPropertyValue("--brand-icon")).toContain(alphaIcon);
@@ -26,7 +26,7 @@ describe("design theme selection", () => {
     expect(document.documentElement).toHaveClass("dark");
     expect(JSON.parse(localStorage.getItem(selectionStorageKey)!)).toEqual({ theme: "britanniae", palette: "merlin" });
     expect(screen.getByRole("button", { name: "Apply Britanniae Merlin" })).toHaveAttribute("aria-pressed", "true");
-    fireEvent.click(screen.getByRole("button", { name: "Apply Alpha Neutral" }));
+    fireEvent.click(screen.getByRole("button", { name: "Apply Alpha Base" }));
     expect(document.documentElement.dataset.elementsTheme).toBe("alpha");
     expect(screen.getByRole("img", { name: "Alpha app icon" })).toBeInTheDocument();
   });
@@ -44,8 +44,8 @@ describe("design theme selection", () => {
   it("still switches when storage is unavailable", () => {
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("blocked"); });
     render(<ThemeProvider><PalettePicker themeId="britanniae" /></ThemeProvider>);
-    fireEvent.click(screen.getByRole("button", { name: "Mordred" }));
-    expect(document.documentElement.dataset.elementsPalette).toBe("mordred");
+    fireEvent.click(screen.getByRole("button", { name: "Percival" }));
+    expect(document.documentElement.dataset.elementsPalette).toBe("percival");
   });
   it("syncs selections from another tab", () => {
     render(<ThemeProvider><PalettePicker /></ThemeProvider>);

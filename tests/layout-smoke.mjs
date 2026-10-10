@@ -39,7 +39,7 @@ try {
     await page.evaluate(mode => { document.documentElement.classList.toggle("dark", mode === "dark"); localStorage.setItem("elements-docs-theme", mode); }, mode);
     for (const theme of ["alpha", "britanniae"]) {
       await page.getByRole("combobox", { name: "Layout theme" }).selectOption(theme);
-      const palettes = theme === "alpha" ? ["neutral"] : ["arthur", "guinevere", "merlin", "mordred", "percival", "lancelot", "galahad"];
+      const palettes = theme === "alpha" ? ["base"] : ["arthur", "guinevere", "merlin", "percival", "lancelot", "galahad"];
       for (const palette of palettes) {
         await page.getByRole("combobox", { name: "Layout palette" }).selectOption(palette);
         await page.getByRole("tab", { name: "Overview", exact: true }).click();

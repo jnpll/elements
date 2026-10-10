@@ -49,8 +49,10 @@ remain where theme overrides or browser tests need them; they are not a second
 layout styling system. The embedded sample app uses container-query utilities
 so its mobile preview responds independently of the browser viewport.
 
-The seven noble-gas tiles select Britanniae palettes in order: Arthur, Guinevere,
-Merlin, Mordred, Percival, Lancelot, and Galahad. Alpha remains at Hydrogen.
+The seven noble-gas tiles select Cosmo palettes: Astral, Solar, Lunar,
+Nebular, Quasar, Pulsar, and Stellar. Britanniae occupies the six alkaline
+earth metal tiles. Alpha stays at Hydrogen, and Pantheon starts with thirteen
+transition-metal tiles.
 Selecting a tile applies the design throughout the app without changing light/dark
 mode. Selection is validated, persisted in localStorage, and restored before paint.
 Collection links open documentation separately from tile selection.
@@ -61,7 +63,7 @@ library palette stylesheets at build time;
 there is no second hand-maintained color catalog. Swatch modes are independent
 of the app's appearance, and palette selection updates the displayed tokens.
 
-Britanniae styles and manifest are imported directly from the published package.
+Collection styles and manifests are imported directly from the installed package.
 Theme icons use typed SVG data URL exports from `@jnpll/elements-ui/icons`.
 There are no copied theme/icon assets in `public` and no authoring sync step.
 
@@ -72,7 +74,7 @@ positions are deliberately empty. Family colors use a conventional pastel scheme
 
 `src/collections/themes.ts` stores discovery metadata: theme name, icon fallback,
 element position, and available palettes. `/themes/alpha` previews the current
-Neutral palette and links to the component documentation and playground.
+Base palette and links to the component documentation and playground.
 
 The library owns reusable design contracts in `src/collections/<theme>/theme.json`,
 structural CSS in `theme.css`, and light/dark color variants in `palettes/*.css`.

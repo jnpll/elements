@@ -30,7 +30,7 @@ describe("palette documentation", () => {
     expect(arthur.css).toContain('[data-elements-theme="britanniae"]');
   });
   it("filters mappings, geometry, and component-local declarations", () => {
-    const palette = parsePaletteColors('@theme { --color-primary: var(--primary); } :root { --primary: white; --radius: 4px; --elements-font-sans: Arial; } .dark { --primary: black; } .demo { --primary: red; }', "neutral", "Neutral");
+    const palette = parsePaletteColors('@theme { --color-primary: var(--primary); } :root { --primary: white; --radius: 4px; --elements-font-sans: Arial; } .dark { --primary: black; } .demo { --primary: red; }', "base", "Base");
     expect(palette.light).toEqual({ "--primary": "white" });
     expect(palette.dark).toEqual({ "--primary": "black" });
     expect(palette.css).toContain(":root {");

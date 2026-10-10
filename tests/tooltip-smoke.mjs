@@ -15,7 +15,7 @@ try {
     await trigger.hover();
     await page.getByRole("tooltip").waitFor();
     const text = await page.getByRole("tooltip").innerText();
-    assert.match(text, name === "Select theme and palette" ? /Theme and palette: Alpha \/ Neutral/ : new RegExp(name));
+    assert.match(text, name === "Select theme and palette" ? /Theme and palette: Alpha \/ Base/ : new RegExp(name));
     await page.mouse.move(0, 900);
     await page.getByRole("tooltip").waitFor({ state: "hidden" });
   }

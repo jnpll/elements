@@ -1,6 +1,6 @@
 # Elements
 
-A Next.js documentation app consuming `@jnpll/elements-ui@0.4.0` from GitHub Packages
+A Next.js documentation app consuming `@jnpll/elements-ui@0.4.1` from GitHub Packages
 through its public exports. No library components are copied into this app.
 
 ## Layout previews
@@ -37,7 +37,7 @@ Theme switching now uses the library's `ElementsThemeProvider`,
 `useElementsTheme`, `ThemeSelector`, and `getElementsThemeScript`, with all
 bundled palettes loaded through `@jnpll/elements-ui/themes.css`. The app keeps
 only discovery metadata and compatibility names for existing consumers.
-These APIs are included in the pinned 0.4.0 release and available in
+These APIs are included in the pinned 0.4.1 release and available in
 registry-only CI and deployment without a sibling library checkout.
 
 App layouts, spacing, sizing, and responsive states use Tailwind CSS 4 utilities
@@ -62,6 +62,10 @@ CSS values, and copyable palette CSS. The data is parsed from the installed
 library palette stylesheets at build time;
 there is no second hand-maintained color catalog. Swatch modes are independent
 of the app's appearance, and palette selection updates the displayed tokens.
+Code previews use Prettier for TSX, JavaScript, CSS, HTML, JSON, Markdown,
+YAML, and GraphQL (including common filename labels). Copy uses the formatted
+text. Shiki adds syntax colours for those languages and shell examples, with
+light and dark variants. Shell and `.npmrc` examples keep their authored formatting.
 
 Collection styles and manifests are imported directly from the installed package.
 Theme icons use typed SVG data URL exports from `@jnpll/elements-ui/icons`.
@@ -78,7 +82,7 @@ Base palette and links to the component documentation and playground.
 
 The library owns reusable design contracts in `src/collections/<theme>/theme.json`,
 structural CSS in `theme.css`, and light/dark color variants in `palettes/*.css`.
-The app consumes these exports from version 0.4.0 by default. Local library
+The app consumes these exports from version 0.4.1 by default. Local library
 testing is opt-in; deployment and CI continue to use the published package.
 
 ## Run

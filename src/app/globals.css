@@ -28,6 +28,8 @@ code { font-size: 12px; }
 .top-nav a.active:after { content: ""; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: var(--foreground); }
 .search-box:focus-within { outline: 2px solid var(--ring); }
 .code-block pre { tab-size: 2; }
+.code-block .syntax-token { color: var(--syntax-light); }
+.dark .code-block .syntax-token { color: var(--syntax-dark); }
 @layer base {
 table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
 th { font-weight: 500; color: var(--muted-foreground); border-bottom: 1px solid var(--border); padding: 10px 12px; white-space: nowrap; }

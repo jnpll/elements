@@ -23,10 +23,10 @@ describe("palette documentation", () => {
   });
   it("preserves expressions, aliases, and complete Britanniae CSS", async () => {
     const [arthur] = await loadThemeColors(themes[1]);
-    expect(arthur.light["--primary"]).toBe("#a52b37");
-    expect(arthur.dark["--primary"]).toBe("#e1be67");
+    expect(arthur.light["--primary"]).toBe("#ad3040");
+    expect(arthur.dark["--primary"]).toBe("#dd8791");
     expect(arthur.light["--card-foreground"]).toBe("var(--foreground)");
-    expect(arthur.light["--secondary"]).toBe("color-mix(in srgb, #a52b37, white 92%)");
+    expect(arthur.light["--secondary"]).toBe("color-mix(in srgb, #ad3040, white 90%)");
     expect(arthur.css).toContain('[data-elements-theme="britanniae"]');
   });
   it("filters mappings, geometry, and component-local declarations", () => {
@@ -41,11 +41,11 @@ describe("palette documentation", () => {
     const palettes = await loadThemeColors(themes[1]);
     render(<ThemeProvider><PaletteColors themeId="britanniae" defaultPalette="arthur" palettes={palettes} /></ThemeProvider>);
     const light = screen.getByLabelText("Arthur light color tokens");
-    expect(within(light).getAllByText("#a52b37").length).toBeGreaterThan(0);
-    expect(light.querySelector('[data-color-token="--primary"]')?.parentElement?.style.getPropertyValue("--primary")).toBe("#a52b37");
+    expect(within(light).getAllByText("#ad3040").length).toBeGreaterThan(0);
+    expect(light.querySelector('[data-color-token="--primary"]')?.parentElement?.style.getPropertyValue("--primary")).toBe("#ad3040");
     await userEvent.click(screen.getByRole("tab", { name: "Dark" }));
     const dark = screen.getByLabelText("Arthur dark color tokens");
-    expect(within(dark).getAllByText("#e1be67").length).toBeGreaterThan(0);
+    expect(within(dark).getAllByText("#dd8791").length).toBeGreaterThan(0);
     expect(document.documentElement.classList.contains("dark")).toBe(false);
     await userEvent.click(screen.getByText("Arthur CSS", { exact: true }));
     expect(screen.getByRole("button", { name: "Copy code" })).toBeVisible();

@@ -1,6 +1,6 @@
 # Elements
 
-A Next.js documentation app consuming `@jnpll/elements-ui@0.4.1` from GitHub Packages
+A Next.js documentation app consuming `@jnpll/elements-ui@0.4.4` from GitHub Packages
 through its public exports. No library components are copied into this app.
 
 ## Layout previews

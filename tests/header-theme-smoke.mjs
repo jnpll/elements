@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 import { chromium } from "playwright";
 import { toggleAppearance } from "./appearance-helpers.mjs";
+import { elementsThemes } from "@jnpll/elements-ui/themes";
+
+const alpha = elementsThemes.find(theme => theme.id === "alpha");
+const alphaDefault = alpha.palettes.find(palette => palette.id === alpha.defaultPalette).name;
 
 const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -13,9 +17,9 @@ try {
   const trigger = page.getByRole("button", { name: "Select theme and palette", exact: true });
   await trigger.click();
   const picker = page.locator("[data-theme-picker]");
-  await picker.getByRole("button", { name: "Base", exact: true }).waitFor();
-  assert.equal(await picker.getByRole("button").count(), 5);
-  assert.match(await picker.getByRole("button", { name: "Base", exact: true }).innerText(), /01/);
+  await picker.getByRole("button", { name: alphaDefault, exact: true }).waitFor();
+  assert.equal(await picker.getByRole("button").count(), elementsThemes.length + alpha.palettes.length);
+  assert.match(await picker.getByRole("button", { name: alphaDefault, exact: true }).innerText(), /01/);
   await page.screenshot({ path: "test-results/theme-selector-desktop.png" });
   await picker.getByRole("button", { name: "Britanniae", exact: true }).click();
   await picker.getByRole("button", { name: "Merlin", exact: true }).click();
@@ -42,7 +46,7 @@ try {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     await page.screenshot({ path: `test-results/theme-selector-mobile-${width}.png` });
     if (width === 320) await picker.getByRole("button", { name: "Alpha", exact: true }).click();
-    await picker.getByRole("button", { name: width === 390 ? "Arthur" : "Base", exact: true }).click();
+    await picker.getByRole("button", { name: width === 390 ? "Arthur" : alphaDefault, exact: true }).click();
     await picker.waitFor({ state: "hidden" });
     assert.ok(await page.locator("html").evaluate(el => el.classList.contains("dark")));
   }

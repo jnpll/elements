@@ -6,6 +6,7 @@
     "dev": "next dev --webpack",
     "ui:local": "node scripts/use-elements-ui.mjs local",
     "ui:published": "node scripts/use-elements-ui.mjs published",
+    "ui:status": "node scripts/use-elements-ui.mjs status",
     "dev:local": "npm run ui:local && npm run dev --",
     "build": "next build --webpack",
     "start": "next start",

@@ -3,6 +3,7 @@ import { mkdir } from "node:fs/promises";
 import { chromium } from "playwright";
 import { toggleAppearance } from "./appearance-helpers.mjs";
 import { alphaIcon, crown2BoldIcon, ringedPlanetIcon, pantheonFilledIcon } from "@jnpll/elements-ui/icons";
+import { elementsThemes } from "@jnpll/elements-ui/themes";
 
 const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, colorScheme: "light" });
@@ -110,7 +111,7 @@ try {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     await page.screenshot({ path: `test-results/britanniae-mobile-${width}.png`, fullPage: true });
   }
-  await page.getByRole("button", { name: "Apply Alpha Base", exact: true }).click();
+  await page.getByRole("button", { name: `Apply Alpha ${elementsThemes[0].palettes[0].name}`, exact: true }).click();
   assert.equal(await page.locator("html").getAttribute("data-elements-theme"), "alpha");
   assert.doesNotMatch(await page.locator("h1").evaluate(el => getComputedStyle(el).fontFamily), /Georgia/);
   assert.deepEqual(errors, []);

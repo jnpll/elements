@@ -6,6 +6,7 @@ import { selectionStorageKey } from "@/collections/themes";
 import Home from "@/app/page";
 import { ThemeIcon } from "@/components/theme-icon";
 import { alphaIcon, crown2BoldIcon } from "@jnpll/elements-ui/icons";
+import { themes } from "@/collections/themes";
 
 beforeEach(() => { localStorage.clear(); document.documentElement.classList.remove("dark"); });
 afterEach(() => {
@@ -26,7 +27,7 @@ describe("design theme selection", () => {
     expect(document.documentElement).toHaveClass("dark");
     expect(JSON.parse(localStorage.getItem(selectionStorageKey)!)).toEqual({ theme: "britanniae", palette: "merlin" });
     expect(screen.getByRole("button", { name: "Apply Britanniae Merlin" })).toHaveAttribute("aria-pressed", "true");
-    fireEvent.click(screen.getByRole("button", { name: "Apply Alpha Base" }));
+    fireEvent.click(screen.getByRole("button", { name: `Apply Alpha ${themes[0].palettes[0].name}` }));
     expect(document.documentElement.dataset.elementsTheme).toBe("alpha");
     expect(screen.getByRole("img", { name: "Alpha app icon" })).toBeInTheDocument();
   });

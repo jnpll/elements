@@ -4,6 +4,7 @@ import { afterEach, beforeEach, expect, it } from "vitest";
 import { ThemeSelector } from "@/components/theme-selector";
 import { ThemeProvider } from "@/components/theme-provider";
 import { selectionStorageKey } from "@/collections/themes";
+import { themes } from "@/collections/themes";
 
 beforeEach(() => localStorage.clear());
 afterEach(() => {
@@ -19,8 +20,9 @@ it("selects and persists a palette without changing appearance, then returns to 
   render(<ThemeProvider><ThemeSelector /></ThemeProvider>);
   const trigger = screen.getByRole("button", { name: "Select theme and palette" });
   await user.click(trigger);
-  expect(screen.getByRole("button", { name: "Base" })).toHaveAttribute("aria-pressed", "true");
-  expect(screen.getByRole("button", { name: "Base" })).toHaveTextContent("01");
+  const alphaDefault = themes[0].palettes.find(palette => palette.id === themes[0].defaultPalette)!;
+  expect(screen.getByRole("button", { name: alphaDefault.name })).toHaveAttribute("aria-pressed", "true");
+  expect(screen.getByRole("button", { name: alphaDefault.name })).toHaveTextContent("01");
   await user.click(screen.getByRole("button", { name: "Britanniae" }));
   expect(screen.getByRole("group", { name: "Britanniae palettes" })).toBeVisible();
   await user.click(screen.getByRole("button", { name: "Merlin" }));
@@ -31,7 +33,7 @@ it("selects and persists a palette without changing appearance, then returns to 
   await user.click(trigger);
   expect(await screen.findByRole("button", { name: "Merlin" })).toHaveAttribute("aria-pressed", "true");
   await user.click(screen.getByRole("button", { name: "Alpha" }));
-  await user.click(screen.getByRole("button", { name: "Base" }));
+  await user.click(screen.getByRole("button", { name: alphaDefault.name }));
   expect(document.documentElement.dataset.elementsTheme).toBe("alpha");
 });
 

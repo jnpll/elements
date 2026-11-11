@@ -4,7 +4,8 @@ const alpha = elementsThemes.find(theme => theme.id === "alpha")!;
 const britanniae = elementsThemes.find(theme => theme.id === "britanniae")!;
 const cosmo = elementsThemes.find(theme => theme.id === "cosmo")!;
 const pantheon = elementsThemes.find(theme => theme.id === "pantheon")!;
-import { alphaIcon, crown2BoldIcon, ringedPlanetIcon, pantheonFilledIcon } from "@jnpll/elements-ui/icons";
+import * as icons from "@jnpll/elements-ui/icons";
+const { alphaIcon, crown2BoldIcon, ringedPlanetIcon, pantheonFilledIcon } = icons;
 
 const pantheonInitials: Record<string, string> = {
   apollo: "Ap", artemis: "At", loki: "Lo", freya: "Fr", ishtar: "It",
@@ -36,8 +37,10 @@ export interface ThemeCollection {
 export const themes: ThemeCollection[] = [{
   id: "alpha", name: "Alpha", initial: "A", icon: alphaIcon, element: 1,
   defaultPalette: alpha.defaultPalette,
-  description: "The original foundation.",
-  palettes: alpha.palettes.map(palette => ({ ...palette, element: 1, initial: "A", modes: ["light", "dark"] })),
+  description: alpha.palettes.some(palette => palette.id === "001")
+    ? "Neutral monochrome, from the original flat base to glass surfaces."
+    : "The original foundation.",
+  palettes: alpha.palettes.map(palette => ({ ...palette, element: palette.element ?? 1, initial: /^\d{3}$/.test(palette.name) ? palette.name.slice(1) : "A", modes: ["light", "dark"] })),
 }, {
   id: britanniae.id, name: britanniae.name, initial: "B", icon: crown2BoldIcon, element: 4,
   defaultPalette: britanniae.defaultPalette,

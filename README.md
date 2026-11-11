@@ -51,7 +51,7 @@ so its mobile preview responds independently of the browser viewport.
 
 The seven noble-gas tiles select Cosmo palettes: Astral, Solar, Lunar,
 Nebular, Quasar, Pulsar, and Stellar. Britanniae occupies the six alkaline
-earth metal tiles. Alpha stays at Hydrogen, and Pantheon starts with thirteen
+earth metal tiles. Alpha 000 stays at Hydrogen and Alpha 001 occupies Oxygen; Pantheon starts with thirteen
 transition-metal tiles.
 Selecting a tile applies the design throughout the app without changing light/dark
 mode. Selection is validated, persisted in localStorage, and restored before paint.
@@ -72,13 +72,13 @@ Theme icons use typed SVG data URL exports from `@jnpll/elements-ui/icons`.
 There are no copied theme/icon assets in `public` and no authoring sync step.
 
 The home page is an 18-column periodic table with 118 element positions and
-detached lanthanide/actinide rows. Alpha occupies Hydrogen's position; unassigned
+detached lanthanide/actinide rows. Alpha 000 and 001 occupy Hydrogen and Oxygen; unassigned
 positions are deliberately empty. Family colors use a conventional pastel scheme
 (periodic tables do not have one universal color standard).
 
 `src/collections/themes.ts` stores discovery metadata: theme name, icon fallback,
 element position, and available palettes. `/themes/alpha` previews the current
-Base palette and links to the component documentation and playground.
+000 and 001 palettes and links to the component documentation and playground.
 
 The library owns reusable design contracts in `src/collections/<theme>/theme.json`,
 structural CSS in `theme.css`, and light/dark color variants in `palettes/*.css`.
@@ -120,12 +120,16 @@ Or build/install the local library and start the app in one command:
 npm run dev:local -- --port 3010
 ```
 
-`ui:local` builds the sibling library, packs its public package contents, and
-installs that local snapshot into the app's `node_modules`. No publication or
-global `npm link` is involved, avoiding a second React instance from the sibling
-checkout. It leaves `package.json` and `package-lock.json` unchanged. Rerun it
-after library edits and restart Next.js; this is not a live/watch link. Installing
-new library dependencies may still require registry access.
+`ui:local` builds the sibling library and copies its built package into the
+`elements` app's `node_modules`. No publication or global `npm link` is
+involved, avoiding a second React instance from the sibling checkout. It leaves
+`package.json` and `package-lock.json` unchanged. Rerun it after library edits
+and restart Next.js; this is not a live/watch link. New library dependencies
+must be installed separately before using them locally.
+
+Run `npm run ui:status` from `elements` to see whether its installed package
+comes from the local checkout and whether it includes Alpha 001.
+This checks the installed package; restart the dev server to load that package.
 
 To return to the release pinned in `package.json`:
 

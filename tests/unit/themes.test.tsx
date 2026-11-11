@@ -27,11 +27,11 @@ describe("theme collections", () => {
     expect(within(legend).queryByText("Noble gases")).not.toBeInTheDocument();
     expect(within(legend).queryByText("Other nonmetals")).not.toBeInTheDocument();
     expect(within(legend).getByText("Alkali metals")).toBeInTheDocument();
-    expect(within(legend).getAllByRole("link")).toHaveLength(4);
+    expect(within(legend).getAllByRole("link")).toHaveLength(themes.length);
     expect(legend.children).toHaveLength(Object.keys(families).length);
   });
-  it("stores Alpha with its Base palette and a replaceable icon", () => {
-    expect(themes[0]).toMatchObject({ id: "alpha", initial: "A", icon: alphaIcon, element: 1, defaultPalette: "base" });
+  it("stores Alpha with a replaceable icon and a valid default palette", () => {
+    expect(themes[0]).toMatchObject({ id: "alpha", initial: "A", icon: alphaIcon, element: 1 });
     for (const theme of themes) expect(theme.palettes.some(palette => palette.id === theme.defaultPalette)).toBe(true);
   });
   it("has all 118 elements exactly once with no overlapping positions", () => {
@@ -49,14 +49,21 @@ describe("theme collections", () => {
     expect(screen.getByRole("img", { name: "Britanniae collection icon" }).style.getPropertyValue("--collection-icon")).toContain(crown2BoldIcon);
     expect(screen.getByRole("img", { name: "Cosmo collection icon" }).style.getPropertyValue("--collection-icon")).toContain(ringedPlanetIcon);
     expect(screen.getByRole("img", { name: "Pantheon collection icon" }).style.getPropertyValue("--collection-icon")).toContain(pantheonFilledIcon);
-    expect(screen.getByRole("button", { name: "Apply Alpha Base" }).textContent).toBe("A");
-    expect(screen.getByRole("img", { name: "Base icon" })).toHaveTextContent("A");
+    const alphaFirst = themes[0].palettes[0];
+    const alphaFirstButton = screen.getByRole("button", { name: `Apply Alpha ${alphaFirst.name}` });
+    expect(alphaFirstButton).toHaveTextContent(alphaFirst.initial);
+    expect(within(alphaFirstButton).getByRole("img", { name: `${alphaFirst.name} icon` })).toHaveTextContent(alphaFirst.initial);
+    if (themes[0].palettes.some(palette => palette.id === "001")) {
+      expect(screen.getByRole("button", { name: "Apply Alpha 000" })).toHaveTextContent("00");
+      expect(screen.getByRole("button", { name: "Apply Alpha 001" })).toHaveTextContent("01");
+      expect(themes[0].palettes.map(palette => palette.element)).toEqual([1, 8]);
+    }
     expect(themes[1].palettes.map(palette => palette.element)).toEqual([4, 12, 20, 38, 56, 88]);
     expect(themes[2].palettes.map(palette => palette.element)).toEqual([2, 10, 18, 36, 54, 86, 118]);
     expect(themes[3].palettes.map(palette => palette.element)).toEqual([21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 39, 40, 41]);
     for (const palette of themes[1].palettes) expect(screen.getByRole("button", { name: `Apply Britanniae ${palette.name}` }).textContent).toBe(palette.initial);
     const empty = container.querySelectorAll("[data-element]");
-    expect(empty).toHaveLength(91);
+    expect(empty).toHaveLength(118 - themes.reduce((total, theme) => total + theme.palettes.length, 0));
     for (const tile of empty) expect(tile).toHaveTextContent(/^$/);
     const positions = themes.flatMap(theme => theme.palettes.map(palette => palette.element));
     expect(new Set(positions).size).toBe(positions.length);
@@ -69,8 +76,10 @@ describe("theme collections", () => {
     expect(resolveSelection({ theme: "britanniae", palette: "missing" }).palette).toBe("arthur");
     expect(resolveSelection({ theme: "cosmo", palette: "quasar" })).toEqual({ theme: "cosmo", palette: "quasar" });
     expect(resolveSelection({ theme: "pantheon", palette: "isis" })).toEqual({ theme: "pantheon", palette: "isis" });
+    if (themes[0].palettes.some(palette => palette.id === "001")) expect(resolveSelection({ theme: "portfolio", palette: "base" })).toEqual({ theme: "alpha", palette: "001" });
     expect(resolveSelection({ theme: "britanniae", palette: "mordred" }).palette).toBe("arthur");
-    expect(resolveSelection({ theme: "alpha", palette: "neutral" })).toEqual({ theme: "alpha", palette: "base" });
-    for (const value of [null, "invalid", {}, { theme: "unknown" }]) expect(resolveSelection(value)).toEqual({ theme: "alpha", palette: "base" });
+    const alphaDefault = themes[0].defaultPalette;
+    expect(resolveSelection({ theme: "alpha", palette: "neutral" })).toEqual({ theme: "alpha", palette: alphaDefault });
+    for (const value of [null, "invalid", {}, { theme: "unknown" }]) expect(resolveSelection(value)).toEqual({ theme: "alpha", palette: alphaDefault });
   });
 });
